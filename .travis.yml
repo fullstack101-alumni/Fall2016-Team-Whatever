@@ -9,4 +9,4 @@ php:
 before_script:
   - composer self-update
   
-script: D:\CLASSES\Fullstack2\test\test_test.php
+script: ./test/test_test.php
