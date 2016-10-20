@@ -1,5 +1,5 @@
 <?php
-	require_once 'db.php';
+	require_once ('D:\CLASSES\Fullstack2\db.php');
 	require_once 'PHPUnit/Autoload.php';
 	ini_set('display_errors', 1); 
 	ini_set('error_reporting', E_ALL);
@@ -26,7 +26,8 @@
     }
 		
 		public function setUp() {
-			$this->test = new DB($dbname, $dbhost, $dbuser, $dbpass);
+			parent::setUp();
+			$this->test = new DB($this->dbname, $this->dbhost, $this->dbuser, $this->dbpass);
 		}
 		
 		public function testSimpleRead() {
@@ -39,6 +40,7 @@
 			$this->assertTrue(!empty($res));
 		}
 		
+				
 		public function testRead() {
 			$sql = "SELECT id, fname, lname, username, email FROM users WHERE id = 1 AND fname = fn";
 			   
@@ -51,6 +53,7 @@
 			   
 			$res = $this->modify($sql);
 			$this->assertTrue(!empty($res) || $res == FALSE);
-		}		
+		}
+
 	}
 ?>

@@ -2,7 +2,7 @@
 
 session_start();
 
-include_once "db.php";
+include_once ('D:\CLASSES\Fullstack2\db.php');
 $GLOBALS['db'] = new DB("studymanag", "localhost", "root", "");
 define("DEF_PAR", '__DEFAULT');
 
