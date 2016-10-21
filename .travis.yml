@@ -5,7 +5,7 @@ language: php
 php:
   - 5.6
   
-script: .\test\test_test.php
+script: ./test/test_test.php
   
 # asdad
 # Commands to be run before your environment runs.
