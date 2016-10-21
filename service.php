@@ -2,7 +2,7 @@
 
 session_start();
 
-include_once ('D:\CLASSES\Fullstack2\db.php');
+include_once "db.php";
 $GLOBALS['db'] = new DB("studymanag", "localhost", "root", "");
 define("DEF_PAR", '__DEFAULT');
 
@@ -16,12 +16,30 @@ if(isset($_GET['action']))
     $_a = $_GET['action'];
 
     /*
+     * Comments table
+     */
+    if($_a == 'addcomment')
+    {
+        addComment();
+    }
+    if($_a == 'getcomments')
+    {
+        getComments();
+    }
+
+    /*
      * User management table (users)
      */
     if($_a == 'adduser')
     {
         $fields = array('fname', 'lname', 'username', 'password', 'email', 'phone', 'institution', 'mfofstudy', 'ppic');
         addUser(buildArray($fields, 4));
+    }
+    else if($_a == 'getgroupmembers')
+    {
+        if(isset($_GET['groupid']))
+            getGroupMembers($_GET['groupid']);
+        else ewe('required http argument(s) not provided');
     }
     else if($_a == 'searchusers')
     {
@@ -114,7 +132,7 @@ if(isset($_GET['action']))
     }
     else if($_a == 'addtasktogroup')
     {
-        if(isset($_GET['taskid']) && isset($_GET['taskid']))
+        if(isset($_GET['taskid']) && isset($_GET['groupid']))
             addTaskToGroup($_GET['taskid'], $_GET['groupid']);
         else ewe('required http argument(s) not provided');
     }
@@ -182,6 +200,33 @@ if(isset($_GET['action']))
 /*
  * GET methods
  */
+
+//Comments table
+function addComment()
+{
+    confirmAuth();
+    if(!isset($_GET['groupid']) || !isset($_GET['content'])) ewe('required http argument(s) not provided');
+    if(empty($_GET['content'])) ewe('required http argument(s) empty');
+    $uid = $_SESSION['userid'];
+    $gid = $_GET['groupid'];
+    $content = $_GET['content'];
+    $res = $GLOBALS['db']->simpleWrite('comments', array(NULL, $gid, $uid, $content, DEF_PAR));
+    if($res === FALSE)
+        ewe('database error');
+}
+
+function getComments()
+{
+    confirmAuth();
+    if(!isset($_GET['groupid'])) ewe('required http argument(s) not provided');
+
+    $gid = $_GET['groupid'];
+    $res = $GLOBALS['db']->simpleRead('comments', $gid, 'groupid');
+    if($res === FALSE)
+        ewe('database error');
+
+    echo json_encode($res);
+}
 
 //Groups table
 function createGroup($data)
@@ -317,13 +362,12 @@ function sendGroupRequest()
     confirmAuth();
     $uid = $_SESSION['userid'];
 
-    if(isset($_GET['groupid']))
+    if(isset($_GET['groupid']) && isset($_GET['userid']))
     {
         $gid = $_GET['groupid'];
 
         //Admin requests a contact to join group
-        if(isset($_GET['userid']))
-        {
+
             $ruserid = $_GET['userid'];
 
             if(userRelationship($ruserid) != 2)
@@ -335,29 +379,12 @@ function sendGroupRequest()
             if(empty($res))
                 ewe('group doesn\'t exist, or group not created by this user');
 
-            $res = $GLOBALS['db']->simpleWrite('group_members', array(NULL, $ruserid, $gid, '1', '__DEFAULT'));
+            $res = $GLOBALS['db']->simpleWrite('group_members', array(NULL, $ruserid, $gid, '1', '1'));
             if($res === FALSE)
                 ewe('database error, or user already has request for joining group');
         }
 
         //Contact requests admin to join group based on groups of contacts list
-        else {
-            $res = $GLOBALS['db']->simpleRead('groups', $gid, 'id', 'user_admin_id');
-            if($res === FALSE)
-                ewe('database error');
-
-            if (empty($res))
-                ewe('the requested group doesn\'t exist');
-
-            $gadminid = $res[0]['user_admin_id'];
-            if (userRelationship($gadminid) != 2)
-                ewe('the administrator of the requested group is not part of your contacts');
-
-            $res = $GLOBALS['db']->simpleWrite('group_members', array(NULL, $uid, $gid, '0', '__DEFAULT'));
-            if($res === FALSE)
-                ewe('database error, or user already has request for joining group');
-        }
-    }
     else ewe('required http argument(s) not provided');
 }
 
@@ -473,6 +500,19 @@ function searchUsers()
     echo json_encode($res);
 }
 
+function getGroupMembers($gid)
+{
+    confirmAuth();
+
+    $res = $GLOBALS['db']->simpleRead('group_members', $gid, 'groupid', 'memberid');
+    if($res === FALSE) ewe("database error!");
+
+    $res2 = $GLOBALS['db']->simpleRead('groups', $gid, 'id', 'user_admin_id');
+    if($res2 === FALSE) ewe("database error!");
+
+    echo json_encode(array_merge($res, $res2));
+}
+
 function login($data)
 {
     if(isset($_SESSION['userid']))
@@ -586,12 +626,19 @@ function getContacts()
 {
     confirmAuth();
     $uid = $_SESSION['userid'];
+    $contacts = array();
 
-    $sql = "SELECT users.id, fname, lname, username, email FROM users INNER JOIN user_contacts ON users.id = user_contacts.user2id WHERE user1id = $uid AND confirmed = 1";
+    $sql = "SELECT * FROM users";
     $res = $GLOBALS['db']->read($sql);
 
+    foreach($res as $user)
+    {
+        if(userRelationship($user['id']) == 2)
+            $contacts[] = $user;
+    }
+
     if($res === FALSE) ewe("database error!");
-    echo json_encode($res);
+    echo json_encode($contacts);
 }
 
 //User info&management
