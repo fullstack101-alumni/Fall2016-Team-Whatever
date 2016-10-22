@@ -8,6 +8,7 @@ module.exports = function(config) {
   var testBase    = 'testing/';       // transpiled test JS and map files
   var testSrcBase = 'testing/';       // test source TS files
 
+
   config.set({
     basePath: '',
     frameworks: ['jasmine'],
@@ -26,6 +27,19 @@ module.exports = function(config) {
         flags: ['--no-sandbox']
       }
     },
+    preprocessors: {
+    "path/to/templates/**/*.html": ["ng-html2js"]
+},
+
+ngHtml2JsPreprocessor: {
+    // If your build process changes the path to your templates,
+    // use stripPrefix and prependPrefix to adjust it.
+    stripPrefix: "source/path/to/templates/.*/",
+    prependPrefix: "web/path/to/templates/",
+
+    // the name of the Angular module to create
+    moduleName: "my.templates"
+},
     files: [
       // System.js for module loading
       'node_modules/systemjs/dist/system.src.js',
@@ -42,7 +56,8 @@ module.exports = function(config) {
       'node_modules/zone.js/dist/jasmine-patch.js',
       'node_modules/zone.js/dist/async-test.js',
       'node_modules/zone.js/dist/fake-async-test.js',
-
+      'app/app.component',
+      'app/components/users/discussionComponent'
       // RxJs
       { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
       { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },

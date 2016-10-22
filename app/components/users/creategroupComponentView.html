@@ -1,0 +1,41 @@
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+          <li class="active"><a routerLink='/user/undefined'>View Tasks</a></li>
+         <li><a routerLink='/crTask'>Create Task</a></li>
+        <li><a routerLink='/viewGroup'>View Groups</a></li>
+        <li><a routerLink='/creategroup'>Create Group <span class="sr-only">(current)</span></a></li>
+        <li><a routerLink='/friends'>Friends</a></li>
+        <li><a routerLink='/unlogUser'>Log Out</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+      <form class="form-horizontal">
+      <div class="form-group">
+          <label for="title" class="col-lg-2 control-label">Name</label>
+          <div class="col-lg-2">
+        <input type="text" [(ngModel)]="name" id="title" name="title" class="form-control" placeholder="Add Name...">
+          </div>
+      </div> 
+      <div class="form-group">
+          <label for="desc" class="col-lg-2 control-label">Description</label>
+          <div class="col-lg-2">
+        <input type="text" [(ngModel)]="description" id="desc" name="desc" class="form-control" placeholder="Add Description...">
+          </div>
+      </div> 
+        <div class="col-md-8">
+            <input type="button" (click)="createGroup()" (click)="createGroup1()" (click)="goBack()" value="Add" class="btn btn-success">
+      </div>
+      </form>

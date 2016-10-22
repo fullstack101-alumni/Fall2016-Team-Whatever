@@ -27,9 +27,11 @@
       // other libraries
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
+      'ng2-pagination': 'node_modules/ng2-pagination'
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
+      'ng2-pagination ':  { main:'index.js', defaultExtension: 'js'} ,
       app: {
         main: './main.js',
         defaultExtension: 'js'
