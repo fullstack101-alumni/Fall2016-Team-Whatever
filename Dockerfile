@@ -11,7 +11,7 @@ RUN mkdir -p /quickstart /home/nodejs && \
     chown -R nodejs:nodejs /home/nodejs
 
 WORKDIR /quickstart
-COPY package.json /quickstart/
+COPY package.json typings.json /quickstart/
 RUN npm install --unsafe-perm=true
 
 COPY . /quickstart

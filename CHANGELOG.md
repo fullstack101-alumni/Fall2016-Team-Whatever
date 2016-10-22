@@ -1,16 +1,6 @@
-<a name="0.2.13"></a>
-# 0.2.13 (2016-10-20)
-* Protractor 4
-* Move from `typings` to `@types`. See `tsconfig.json` changes.
-* Angular v2.1.1
-
-<a name="0.2.12"></a>
-# 0.2.12 (2016-10-06)
-* Angular v2.1.0
-
-<a name="0.2.11"></a>
+<a name="0.2.10"></a>
 # 0.2.11 (2016-10-06)
-* Angular v2.0.2
+* Angular v.2.0.2
 * License is MIT
 * Current testing configuration
 * No code changes
